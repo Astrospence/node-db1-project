@@ -20,7 +20,7 @@ router.get('/:id', checkAccountId, async (req, res, next) => {
   }
 })
 
-router.post('/', checkAccountPayload, async (req, res, next) => {
+router.post('/', checkAccountPayload, checkAccountNameUnique, async (req, res, next) => {
   try {
     const trimmed = {...req.body, name: req.body.name.trim()}
     const newAccount = await Accounts.create(trimmed)
@@ -50,7 +50,7 @@ router.delete('/:id', checkAccountId, async (req, res, next) => {
 })
 
 router.use((err, req, res, next) => { // eslint-disable-line
-  // DO YOUR MAGIC
+  res.status(err.status || 500).json({ message: err.message, stack: err.stack })
 })
 
 module.exports = router;
